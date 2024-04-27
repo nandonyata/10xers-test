@@ -56,3 +56,14 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	})
 
 }
+
+func (s *UserService) Login(c *fiber.Ctx) error {
+	// user := c.Locals("user").(int)
+
+	return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
+		Code:    http.StatusNotFound,
+		Message: "logged",
+		Data:    nil,
+		Error:   "",
+	})
+}

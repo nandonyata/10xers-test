@@ -14,17 +14,18 @@ var PORT = "3000"
 func main() {
 	config.ConnectDB()
 
-	app := fiber.New()
 	userService := usecase.UserService{Database: config.DB}
+
+	app := fiber.New()
+	userApi := app.Group("/user")
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
-
-	app.Post("/user/register", userService.Register)
+	userApi.Post("/register", userService.Register)
+	userApi.Post("/login", userService.Login)
 
 	fmt.Printf("Listening on port: " + PORT)
-
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
 		log.Panicf("Error listening: %+v", err)
 	}
