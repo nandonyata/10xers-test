@@ -37,7 +37,7 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	dataFromBody.Password = helpers.HashPassword([]byte(dataFromBody.Password))
 
 	repo := repository.UserRepository{Database: s.Database}
-	userId, err := repo.Register(ctx, dataFromBody)
+	userId, err := repo.Insert(ctx, dataFromBody)
 
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(model.HTTPResponse{
@@ -50,7 +50,7 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
 		Code:    http.StatusCreated,
-		Message: "User id: " + strconv.Itoa(userId),
+		Message: "Success Register, User id: " + strconv.Itoa(userId),
 		Data:    nil,
 		Error:   "",
 	})
