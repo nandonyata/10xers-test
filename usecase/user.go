@@ -23,8 +23,8 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	c.BodyParser(&dataFromBody)
 
 	if dataFromBody.Email == "" || dataFromBody.Name == "" || dataFromBody.Password == "" {
-		return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
-			Code:    http.StatusNotFound,
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
 			Message: "",
 			Data:    nil,
 			Error:   "Fill All Field",
@@ -40,7 +40,7 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	userId, err := repo.Register(ctx, dataFromBody)
 
 	if err != nil {
-		return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
+		return c.Status(http.StatusNotFound).JSON(model.HTTPResponse{
 			Code:    http.StatusNotFound,
 			Message: "",
 			Data:    nil,
@@ -49,7 +49,7 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
-		Code:    http.StatusNotFound,
+		Code:    http.StatusCreated,
 		Message: "User id: " + strconv.Itoa(userId),
 		Data:    nil,
 		Error:   "",
@@ -60,10 +60,52 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 func (s *UserService) Login(c *fiber.Ctx) error {
 	// user := c.Locals("user").(int)
 
-	return c.Status(http.StatusCreated).JSON(model.HTTPResponse{
-		Code:    http.StatusNotFound,
-		Message: "logged",
-		Data:    nil,
-		Error:   "",
+	var dataFromBody entity.User
+	c.BodyParser(&dataFromBody)
+
+	if dataFromBody.Email == "" || dataFromBody.Password == "" {
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
+			Message: "",
+			Data:    nil,
+			Error:   "Fill All Field",
+		})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	repo := repository.UserRepository{Database: s.Database}
+	user, err := repo.FindOne(ctx, dataFromBody)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
+			Message: "",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+	}
+
+	checkPassword := helpers.ComparePassword([]byte(user.Password), []byte(dataFromBody.Password))
+	if !checkPassword {
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
+			Message: "",
+			Data:    nil,
+			Error:   "invalid email/password",
+		})
+	}
+
+	accessToken := helpers.SignToken(uint(user.Id))
+
+	return c.Status(http.StatusOK).JSON(model.HTTPResponse{
+		Code:    http.StatusOK,
+		Message: "Success Login",
+		Data: map[string]interface{}{
+			"accessToken": accessToken,
+			"user":        user,
+		},
+		Error: "",
 	})
 }
