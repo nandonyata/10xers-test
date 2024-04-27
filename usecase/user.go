@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nandonyata/10xers-test/entity"
+	"github.com/nandonyata/10xers-test/helpers"
 	"github.com/nandonyata/10xers-test/model"
 	"github.com/nandonyata/10xers-test/repository"
 )
@@ -32,6 +33,8 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
+	dataFromBody.Password = helpers.HashPassword([]byte(dataFromBody.Password))
 
 	repo := repository.UserRepository{Database: s.Database}
 	userId, err := repo.Register(ctx, dataFromBody)

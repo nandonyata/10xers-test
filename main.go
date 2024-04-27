@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nandonyata/10xers-test/config"
@@ -22,5 +23,9 @@ func main() {
 
 	app.Post("/user/register", userService.Register)
 
-	app.Listen(fmt.Sprintf(":+%s", PORT))
+	fmt.Printf("Listening on port: " + PORT)
+
+	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
+		log.Panicf("Error listening: %+v", err)
+	}
 }
