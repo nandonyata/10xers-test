@@ -1,9 +1,13 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/nandonyata/10xers-test/config"
 )
+
+var PORT = "3000"
 
 func main() {
 	config.ConnectDB()
@@ -14,5 +18,5 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
-	app.Listen(":3000")
+	app.Listen(fmt.Sprintf(":+%s", PORT))
 }
