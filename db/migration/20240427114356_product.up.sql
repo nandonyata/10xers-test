@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
 	price INT NOT NULL,
-	stock INT NOT NULL
-    productType VARCHAR(50) NOT NULL,
+	stock INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
 	userId INT NOT NULL,
+    FOREIGN KEY(userId) REFERENCES "user"(id) ON DELETE CASCADE
 );
