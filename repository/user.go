@@ -12,7 +12,7 @@ type UserRepository struct {
 	Database *sql.DB
 }
 
-func (r *UserRepository) Register(ctx context.Context, in entity.User) (int, error) {
+func (r *UserRepository) Insert(ctx context.Context, in entity.User) (int, error) {
 	query := `
 		INSERT INTO "user" (name, role, email, password)
 		VALUES ($1, $2, $3, $4)

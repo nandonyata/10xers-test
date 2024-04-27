@@ -15,15 +15,18 @@ func main() {
 	config.ConnectDB()
 
 	userService := usecase.UserService{Database: config.DB}
+	productService := usecase.ProductService{Database: config.DB}
 
 	app := fiber.New()
 	userApi := app.Group("/user")
+	productApi := app.Group("/product")
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
 	userApi.Post("/register", userService.Register)
 	userApi.Post("/login", userService.Login)
+	productApi.Post("/", productService.Create)
 
 	fmt.Printf("Listening on port: " + PORT)
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
