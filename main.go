@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nandonyata/10xers-test/config"
+	"github.com/nandonyata/10xers-test/middleware"
 	"github.com/nandonyata/10xers-test/usecase"
 )
 
@@ -26,7 +27,7 @@ func main() {
 	})
 	userApi.Post("/register", userService.Register)
 	userApi.Post("/login", userService.Login)
-	productApi.Post("/", productService.Create)
+	productApi.Post("/", middleware.AuthMiddleware, productService.Create)
 
 	fmt.Printf("Listening on port: " + PORT)
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
