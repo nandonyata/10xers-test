@@ -40,8 +40,8 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 	userId, err := repo.Insert(ctx, dataFromBody)
 
 	if err != nil {
-		return c.Status(http.StatusNotFound).JSON(model.HTTPResponse{
-			Code:    http.StatusNotFound,
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
 			Message: "",
 			Data:    nil,
 			Error:   err.Error(),

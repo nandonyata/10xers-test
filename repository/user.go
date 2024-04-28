@@ -22,6 +22,9 @@ func (r *UserRepository) Insert(ctx context.Context, in entity.User) (int, error
 
 	err := r.Database.QueryRowContext(ctx, query, in.Name, in.Role, in.Email, in.Password).Scan(&userID)
 	if err != nil {
+		if err.Error() == "pq: duplicate key value violates unique constraint \"user_email_key\"" {
+			return 0, errors.New("email already exists")
+		}
 		return 0, err
 	}
 

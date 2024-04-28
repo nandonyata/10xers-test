@@ -43,8 +43,8 @@ func main() {
 	productApi.Post("/", middleware.AuthMiddleware, productService.Create)
 	productApi.Get("/", productService.FindAll)
 	productApi.Get("/:id", productService.FindById)
-	productApi.Patch("/:id", productService.UpdateById)
-	productApi.Delete("/:id", productService.DeleteById)
+	productApi.Patch("/:id", middleware.AuthMiddleware, productService.UpdateById)
+	productApi.Delete("/:id", middleware.AuthMiddleware, productService.DeleteById)
 
 	fmt.Printf("Listening on port: " + PORT)
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
