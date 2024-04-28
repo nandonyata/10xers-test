@@ -28,6 +28,7 @@ func main() {
 	userApi.Post("/register", userService.Register)
 	userApi.Post("/login", userService.Login)
 	productApi.Post("/", middleware.AuthMiddleware, productService.Create)
+	productApi.Get("/", productService.FindAll)
 
 	fmt.Printf("Listening on port: " + PORT)
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
