@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -74,8 +75,8 @@ func (s *ProductService) FindAll(c *fiber.Ctx) error {
 func (s *ProductService) FindById(c *fiber.Ctx) error {
 	productId, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(http.StatusOK).JSON(model.HTTPResponse{
-			Code:    http.StatusOK,
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
 			Message: "",
 			Data:    "",
 			Error:   err.Error(),
@@ -108,8 +109,8 @@ func (s *ProductService) FindById(c *fiber.Ctx) error {
 func (s *ProductService) UpdateById(c *fiber.Ctx) error {
 	productId, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(http.StatusOK).JSON(model.HTTPResponse{
-			Code:    http.StatusOK,
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
 			Message: "",
 			Data:    "",
 			Error:   err.Error(),
@@ -159,6 +160,40 @@ func (s *ProductService) UpdateById(c *fiber.Ctx) error {
 		Code:    http.StatusOK,
 		Message: "Success Update Product",
 		Data:    "",
+		Error:   "",
+	})
+}
+
+func (s *ProductService) DeleteById(c *fiber.Ctx) error {
+	productId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "",
+			Data:    "",
+			Error:   err.Error(),
+		})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	repo := repository.ProductRepository{Database: s.Database}
+	result, err := repo.DeleteById(ctx, productId)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "",
+			Data:    "",
+			Error:   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(model.HTTPResponse{
+		Code:    http.StatusOK,
+		Message: "Success Delete Product",
+		Data:    fmt.Sprintf("Rows Affected: %d", result),
 		Error:   "",
 	})
 }

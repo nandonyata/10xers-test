@@ -86,3 +86,22 @@ func (r *ProductRepository) UpdateById(ctx context.Context, in entity.Product) (
 
 	return result, nil
 }
+
+func (r *ProductRepository) DeleteById(ctx context.Context, id int) (int64, error) {
+	query := `
+		DELETE from product
+		WHERE id = $1
+	`
+
+	res, err := r.Database.ExecContext(ctx, query, id)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, err
+}

@@ -31,6 +31,7 @@ func main() {
 	productApi.Get("/", productService.FindAll)
 	productApi.Get("/:id", productService.FindById)
 	productApi.Patch("/:id", productService.UpdateById)
+	productApi.Delete("/:id", productService.DeleteById)
 
 	fmt.Printf("Listening on port: " + PORT)
 	if err := app.Listen(fmt.Sprintf(":+%s", PORT)); err != nil {
