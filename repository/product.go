@@ -71,3 +71,18 @@ func (r *ProductRepository) FindById(ctx context.Context, id int) (entity.Produc
 	return product, nil
 
 }
+
+func (r *ProductRepository) UpdateById(ctx context.Context, in entity.Product) (interface{}, error) {
+	query := `
+		UPDATE product
+		SET title = $2, type = $3, price = $4, stock = $5
+		WHERE id = $1
+	`
+
+	result, err := r.Database.ExecContext(ctx, query, in.Id, in.Title, in.Type, in.Price, in.Stock)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}

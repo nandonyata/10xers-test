@@ -104,3 +104,61 @@ func (s *ProductService) FindById(c *fiber.Ctx) error {
 		Error:   "",
 	})
 }
+
+func (s *ProductService) UpdateById(c *fiber.Ctx) error {
+	productId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(http.StatusOK).JSON(model.HTTPResponse{
+			Code:    http.StatusOK,
+			Message: "",
+			Data:    "",
+			Error:   err.Error(),
+		})
+	}
+
+	var dataFromBody entity.Product
+	c.BodyParser(&dataFromBody)
+
+	dataFromBody.Id = productId
+
+	if dataFromBody.Title == "" || dataFromBody.Type == "" || dataFromBody.Price == 0 || dataFromBody.Stock == 0 {
+		return c.Status(http.StatusBadRequest).JSON(model.HTTPResponse{
+			Code:    http.StatusBadRequest,
+			Message: "",
+			Data:    nil,
+			Error:   "Fill All Field",
+		})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	repo := repository.ProductRepository{Database: s.Database}
+
+	_, err = repo.FindById(ctx, dataFromBody.Id)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "",
+			Data:    nil,
+			Error:   "Data Not Found",
+		})
+	}
+
+	_, err = repo.UpdateById(ctx, dataFromBody)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(model.HTTPResponse{
+		Code:    http.StatusOK,
+		Message: "Success Update Product",
+		Data:    "",
+		Error:   "",
+	})
+}
