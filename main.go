@@ -3,18 +3,31 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/nandonyata/10xers-test/config"
 	"github.com/nandonyata/10xers-test/middleware"
 	"github.com/nandonyata/10xers-test/usecase"
 )
 
-var PORT = "3000"
+var PORT string
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	config.ConnectDB()
+	PORT = os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "3000"
+	}
+}
 
 func main() {
-	config.ConnectDB()
-
 	userService := usecase.UserService{Database: config.DB}
 	productService := usecase.ProductService{Database: config.DB}
 
