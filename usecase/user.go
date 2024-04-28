@@ -58,8 +58,6 @@ func (s *UserService) Register(c *fiber.Ctx) error {
 }
 
 func (s *UserService) Login(c *fiber.Ctx) error {
-	// user := c.Locals("user").(int)
-
 	var dataFromBody entity.User
 	c.BodyParser(&dataFromBody)
 
@@ -102,9 +100,12 @@ func (s *UserService) Login(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(model.HTTPResponse{
 		Code:    http.StatusOK,
 		Message: "Success Login",
-		Data: map[string]interface{}{
-			"accessToken": accessToken,
-			"user":        user,
+		Data: struct {
+			AccessToken string      `json:"accessToken"`
+			User        entity.User `json:"user"`
+		}{
+			AccessToken: accessToken,
+			User:        user,
 		},
 		Error: "",
 	})

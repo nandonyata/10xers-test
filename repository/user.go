@@ -44,3 +44,20 @@ func (r *UserRepository) FindOne(ctx context.Context, in entity.User) (entity.Us
 
 	return user, nil
 }
+
+func (r *UserRepository) FindById(ctx context.Context, in entity.User) (entity.User, error) {
+	query := `
+		SELECT id, name, role, email, password
+		FROM "user"
+		WHERE id = $1
+	`
+
+	var user entity.User
+
+	err := r.Database.QueryRowContext(ctx, query, in.Id).Scan(&user.Id, &user.Name, &user.Role, &user.Email, &user.Password)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
