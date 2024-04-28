@@ -138,8 +138,8 @@ func (s *ProductService) UpdateById(c *fiber.Ctx) error {
 
 	_, err = repo.FindById(ctx, dataFromBody.Id)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
-			Code:    http.StatusInternalServerError,
+		return c.Status(http.StatusNotFound).JSON(model.HTTPResponse{
+			Code:    http.StatusNotFound,
 			Message: "",
 			Data:    nil,
 			Error:   "Data Not Found",
