@@ -25,3 +25,5 @@ migrate -database "postgres://postgres:postgres@localhost:5432/10xers?sslmode=di
 ```bash
 migrate -database "postgres://postgres:postgres@localhost:5432/10xers?sslmode=disable" -path db/migration down
 ```
+
+postman docs: https://documenter.getpostman.com/view/24874313/2sA3BuVTtX
