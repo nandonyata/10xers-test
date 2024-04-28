@@ -7,9 +7,9 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@lat
 
 2. Export an environment variable for convenience:
 ```shell
-export POSTGRESQL_URL='postgres://postgres:password@localhost:5432/example?sslmode=disable'
+export POSTGRESQL_URL='postgres://postgres:password@localhost:5432/your_database?sslmode=disable'
 ```
-don't forget to change the `password` and `example`
+Replace `password` and `your_database` with your actual database credentials.
 
 3. Run the migrations based on what you need:
 
@@ -21,7 +21,7 @@ don't forget to change the `password` and `example`
 
 <!-- 2. Run the unit tests by executing the command `make test`. This will ensure that all the code is functioning as expected before running the server. -->
 
-3. Run the server using the command `make run`. This will start the server and make it available on your specified port on localhost.
+2. Run the server using the command `make run`. This will start the server and make it available on your specified port on localhost.
 
 ## API Documentation
 You can find a Postman exported collection on the project root directory with the name `10xers.postman_collection.json` You can import this collection into Postman to easily test the API endpoints and see examples of the expected request and response formats.
