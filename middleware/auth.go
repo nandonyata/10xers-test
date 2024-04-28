@@ -42,8 +42,8 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	repo := repository.UserRepository{Database: config.DB}
 	user, err := repo.FindById(context.Background(), tempUser)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(model.HTTPResponse{
-			Code:    http.StatusInternalServerError,
+		return c.Status(http.StatusUnauthorized).JSON(model.HTTPResponse{
+			Code:    http.StatusUnauthorized,
 			Message: "",
 			Data:    nil,
 			Error:   "Invalid Token",
