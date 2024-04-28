@@ -54,3 +54,20 @@ func (r *ProductRepository) FindAll(ctx context.Context) ([]entity.Product, erro
 
 	return products, nil
 }
+
+func (r *ProductRepository) FindById(ctx context.Context, id int) (entity.Product, error) {
+	query := `
+		SELECT id, userId, title, type, price, stock
+		FROM product
+		WHERE id = $1
+	`
+	var product entity.Product
+
+	err := r.Database.QueryRowContext(ctx, query, id).Scan(&product.Id, &product.UserId, &product.Title, &product.Type, &product.Price, &product.Stock)
+	if err != nil {
+		return product, err
+	}
+
+	return product, nil
+
+}
